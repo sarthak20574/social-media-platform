@@ -1,5 +1,8 @@
 # 📱 SocialHub - Complete Social Media Platform
 
+
+# Demo Video: https://youtu.be/PsWJWcX6vGg
+
 A modern, full-stack social media platform built with Node.js, React.js, and MongoDB. Features user authentication, friend connections, news feed, private messaging, and a beautiful responsive UI.
 
 ![Social Media Platform](https://img.shields.io/badge/Node.js-Express-green) ![React](https://img.shields.io/badge/React-18.0-blue) ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green) ![License](https://img.shields.io/badge/License-MIT-yellow)
