@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import './App.css';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -23,14 +24,37 @@ function Login() {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required /><br />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required /><br />
-        <button type="submit">Login</button>
-      </form>
-      {error && <p style={{color:'red'}}>{error}</p>}
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2 className="auth-title">Welcome Back! 👋</h2>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <input 
+              type="email" 
+              placeholder="Email" 
+              value={email} 
+              onChange={e => setEmail(e.target.value)} 
+              className="form-input"
+              required 
+            />
+          </div>
+          <div className="form-group">
+            <input 
+              type="password" 
+              placeholder="Password" 
+              value={password} 
+              onChange={e => setPassword(e.target.value)} 
+              className="form-input"
+              required 
+            />
+          </div>
+          <button type="submit" className="btn btn-primary">Login</button>
+        </form>
+        {error && <div className="error-message">{error}</div>}
+        <div className="auth-footer">
+          Don't have an account? <Link to="/register" className="auth-link">Register here</Link>
+        </div>
+      </div>
     </div>
   );
 }
@@ -57,16 +81,48 @@ function Register() {
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required /><br />
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required /><br />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required /><br />
-        <button type="submit">Register</button>
-      </form>
-      {error && <p style={{color:'red'}}>{error}</p>}
-      {success && <p style={{color:'green'}}>{success}</p>}
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2 className="auth-title">Join SocialHub! 🚀</h2>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <input 
+              type="text" 
+              placeholder="Username" 
+              value={username} 
+              onChange={e => setUsername(e.target.value)} 
+              className="form-input"
+              required 
+            />
+          </div>
+          <div className="form-group">
+            <input 
+              type="email" 
+              placeholder="Email" 
+              value={email} 
+              onChange={e => setEmail(e.target.value)} 
+              className="form-input"
+              required 
+            />
+          </div>
+          <div className="form-group">
+            <input 
+              type="password" 
+              placeholder="Password" 
+              value={password} 
+              onChange={e => setPassword(e.target.value)} 
+              className="form-input"
+              required 
+            />
+          </div>
+          <button type="submit" className="btn btn-primary">Register</button>
+        </form>
+        {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
+        <div className="auth-footer">
+          Already have an account? <Link to="/login" className="auth-link">Login here</Link>
+        </div>
+      </div>
     </div>
   );
 }
@@ -116,26 +172,73 @@ function Feed() {
   };
 
   return (
-    <div>
-      <h2>News Feed</h2>
-      <form onSubmit={handlePost}>
-        <textarea value={content} onChange={e => setContent(e.target.value)} placeholder="What's on your mind?" required /><br />
-        <input type="file" accept="image/*,video/*" onChange={e => setFile(e.target.files[0])} />
-        <button type="submit">Post</button>
-      </form>
-      {message && <p style={{color:'green'}}>{message}</p>}
-      {error && <p style={{color:'red'}}>{error}</p>}
-      <hr />
-      {posts.length === 0 && <p>No posts yet.</p>}
-      {posts.map(post => (
-        <div key={post._id} style={{border:'1px solid #ccc', margin:'10px 0', padding:10}}>
-          <b>{post.user?.username || 'Unknown'}</b><br />
-          <span>{new Date(post.createdAt).toLocaleString()}</span>
-          <p>{post.content}</p>
-          {post.image && <img src={`http://localhost:5000/${post.image}`} alt="post" width={200} />}
-          {post.video && <video src={`http://localhost:5000/${post.video}`} controls width={200} />}
+    <div className="main-content">
+      <div className="feed-container">
+        <div className="create-post-card">
+          <h3>Share something with your friends! ✨</h3>
+          <form onSubmit={handlePost} className="post-form">
+            <textarea 
+              value={content} 
+              onChange={e => setContent(e.target.value)} 
+              placeholder="What's on your mind?" 
+              className="form-textarea post-textarea"
+              required 
+            />
+            <div className="post-actions">
+              <input 
+                type="file" 
+                accept="image/*,video/*" 
+                onChange={e => setFile(e.target.files[0])} 
+                className="file-input"
+              />
+              <button type="submit" className="btn btn-primary">Post</button>
+            </div>
+          </form>
+          {message && <div className="success-message">{message}</div>}
+          {error && <div className="error-message">{error}</div>}
         </div>
-      ))}
+
+        <div className="posts-container">
+          {posts.length === 0 && (
+            <div className="empty-state">
+              <h3>No posts yet</h3>
+              <p>Be the first to share something with your friends!</p>
+            </div>
+          )}
+          {posts.map(post => (
+            <div key={post._id} className="post-card">
+              <div className="post-header">
+                <div className="post-user">
+                  <div className="user-avatar">
+                    {post.user?.profilePicture ? (
+                      <img src={`${API_URL.replace('/api', '')}/${post.user.profilePicture}`} alt="Profile" />
+                    ) : (
+                      post.user?.username?.charAt(0)?.toUpperCase() || 'U'
+                    )}
+                  </div>
+                  <div className="user-info">
+                    <strong>{post.user?.username || 'Unknown'}</strong>
+                    <span className="post-time">{new Date(post.createdAt).toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="post-content">
+                <p>{post.content}</p>
+                {post.image && (
+                  <div className="post-media">
+                    <img src={`${API_URL.replace('/api', '')}/${post.image}`} alt="post" />
+                  </div>
+                )}
+                {post.video && (
+                  <div className="post-media">
+                    <video src={`${API_URL.replace('/api', '')}/${post.video}`} controls />
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -210,24 +313,70 @@ function Profile() {
     }
   };
 
-  if (!user) return <div>Loading...</div>;
+  if (!user) return <div className="loading">Loading...</div>;
 
   return (
-    <div>
-      <h2>Profile</h2>
-      <form onSubmit={handleUpdate}>
-        <input type="text" value={username} onChange={e => setUsername(e.target.value)} required /><br />
-        <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Bio" /><br />
-        <button type="submit">Update Profile</button>
-      </form>
-      <br />
-      <form onSubmit={handlePicture}>
-        <input type="file" accept="image/*" onChange={e => setFile(e.target.files[0])} required />
-        <button type="submit">Upload Picture</button>
-      </form>
-      {profilePicture && <div><img src={`http://localhost:5000/${profilePicture}`} alt="Profile" width={100} /></div>}
-      {message && <p style={{color:'green'}}>{message}</p>}
-      {error && <p style={{color:'red'}}>{error}</p>}
+    <div className="main-content">
+      <div className="profile-container">
+        <div className="profile-header">
+          <div className="profile-avatar-large">
+            {profilePicture ? (
+              <img src={`${API_URL.replace('/api', '')}/${profilePicture}`} alt="Profile" />
+            ) : (
+              user.username?.charAt(0)?.toUpperCase() || 'U'
+            )}
+          </div>
+          <div className="profile-info">
+            <h2>{user.username}</h2>
+            <p className="profile-bio">{user.bio || 'No bio yet'}</p>
+          </div>
+        </div>
+
+        <div className="profile-sections">
+          <div className="profile-section">
+            <h3>Update Profile</h3>
+            <form onSubmit={handleUpdate} className="profile-form">
+              <div className="form-group">
+                <input 
+                  type="text" 
+                  value={username} 
+                  onChange={e => setUsername(e.target.value)} 
+                  className="form-input"
+                  required 
+                />
+              </div>
+              <div className="form-group">
+                <textarea 
+                  value={bio} 
+                  onChange={e => setBio(e.target.value)} 
+                  placeholder="Tell us about yourself..." 
+                  className="form-textarea"
+                />
+              </div>
+              <button type="submit" className="btn btn-primary">Update Profile</button>
+            </form>
+          </div>
+
+          <div className="profile-section">
+            <h3>Profile Picture</h3>
+            <form onSubmit={handlePicture} className="profile-form">
+              <div className="form-group">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={e => setFile(e.target.files[0])} 
+                  className="file-input"
+                  required 
+                />
+              </div>
+              <button type="submit" className="btn btn-secondary">Upload Picture</button>
+            </form>
+          </div>
+        </div>
+
+        {message && <div className="success-message">{message}</div>}
+        {error && <div className="error-message">{error}</div>}
+      </div>
     </div>
   );
 }
@@ -323,75 +472,93 @@ function Friends() {
   };
 
   return (
-    <div>
-      <h2>Friends</h2>
-      
-      {/* All Available Users Section */}
-      <div style={{marginBottom: 20}}>
-        <h3>Add Friends</h3>
-        {loading ? (
-          <p>Loading users...</p>
-        ) : allUsers.length === 0 ? (
-          <p>No other users found</p>
-        ) : (
-          <div>
-            <p>Click "Add Friend" next to any user you want to connect with:</p>
-            {allUsers.map(user => (
-              <div key={user._id} style={{padding: 8, border: '1px solid #ddd', margin: 5, borderRadius: 4}}>
-                <strong>{user.username}</strong> ({user.email})
-                <button 
-                  onClick={() => sendRequest(user._id)}
-                  style={{marginLeft: 10, padding: '4px 12px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer'}}
-                >
-                  Add Friend
-                </button>
+    <div className="main-content">
+      <div className="friends-container">
+        {/* All Available Users Section */}
+        <div className="friends-section">
+          <h3>Add Friends 👥</h3>
+          {loading ? (
+            <div className="loading">Loading users...</div>
+          ) : allUsers.length === 0 ? (
+            <div className="empty-state">No other users found</div>
+          ) : (
+            <div>
+              <p>Click "Add Friend" next to any user you want to connect with:</p>
+              <div className="users-grid">
+                {allUsers.map(user => (
+                  <div key={user._id} className="user-card">
+                    <div className="user-avatar">
+                      {user.username?.charAt(0)?.toUpperCase() || 'U'}
+                    </div>
+                    <div className="user-info">
+                      <strong>{user.username}</strong>
+                      <span className="user-email">{user.email}</span>
+                    </div>
+                    <button 
+                      onClick={() => sendRequest(user._id)}
+                      className="btn btn-primary btn-sm"
+                    >
+                      Add Friend
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <hr />
-
-      {/* Friend Requests Section */}
-      <div style={{marginBottom: 20}}>
-        <h3>Friend Requests ({requests.length})</h3>
-        {requests.length === 0 ? (
-          <p>No pending friend requests</p>
-        ) : (
-          requests.map(request => (
-            <div key={request._id} style={{padding: 8, border: '1px solid #ddd', margin: 5, borderRadius: 4}}>
-              <strong>{request.username}</strong>
-              <button 
-                onClick={() => acceptRequest(request._id)}
-                style={{marginLeft: 10, padding: '4px 12px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer'}}
-              >
-                Accept
-              </button>
             </div>
-          ))
-        )}
-      </div>
+          )}
+        </div>
 
-      <hr />
-
-      {/* Friends List Section */}
-      <div>
-        <h3>Your Friends ({friends.length})</h3>
-        {friends.length === 0 ? (
-          <p>No friends yet. Add friends from the list above!</p>
-        ) : (
-          friends.map(friend => (
-            <div key={friend._id} style={{padding: 8, border: '1px solid #ddd', margin: 5, borderRadius: 4}}>
-              <strong>{friend.username}</strong>
+        {/* Friend Requests Section */}
+        <div className="friends-section">
+          <h3>Friend Requests ({requests.length}) 📨</h3>
+          {requests.length === 0 ? (
+            <div className="empty-state">No pending friend requests</div>
+          ) : (
+            <div className="requests-list">
+              {requests.map(request => (
+                <div key={request._id} className="request-card">
+                  <div className="user-avatar">
+                    {request.username?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
+                  <div className="user-info">
+                    <strong>{request.username}</strong>
+                  </div>
+                  <button 
+                    onClick={() => acceptRequest(request._id)}
+                    className="btn btn-success btn-sm"
+                  >
+                    Accept
+                  </button>
+                </div>
+              ))}
             </div>
-          ))
-        )}
-      </div>
+          )}
+        </div>
 
-      {/* Messages */}
-      {message && <p style={{color:'green', marginTop: 10}}>{message}</p>}
-      {error && <p style={{color:'red', marginTop: 10}}>{error}</p>}
+        {/* Friends List Section */}
+        <div className="friends-section">
+          <h3>Your Friends ({friends.length}) ❤️</h3>
+          {friends.length === 0 ? (
+            <div className="empty-state">No friends yet. Add friends from the list above!</div>
+          ) : (
+            <div className="friends-grid">
+              {friends.map(friend => (
+                <div key={friend._id} className="friend-card">
+                  <div className="user-avatar">
+                    {friend.username?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
+                  <div className="user-info">
+                    <strong>{friend.username}</strong>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Messages */}
+        {message && <div className="success-message">{message}</div>}
+        {error && <div className="error-message">{error}</div>}
+      </div>
     </div>
   );
 }
@@ -440,36 +607,61 @@ function Messages() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: 300 }}>
-      <div style={{ width: 200, borderRight: '1px solid #ccc', padding: 10 }}>
-        <b>Friends</b>
-        {friends.length === 0 && <div>No friends</div>}
-        {friends.map(f => (
-          <div key={f._id} style={{ cursor: 'pointer', background: selected === f._id ? '#eee' : '' }} onClick={() => fetchMessages(f._id)}>
-            {f.username}
-          </div>
-        ))}
-      </div>
-      <div style={{ flex: 1, padding: 10 }}>
-        {selected ? (
-          <>
-            <div style={{ minHeight: 200, maxHeight: 300, overflowY: 'auto', border: '1px solid #ccc', marginBottom: 10, padding: 5 }}>
-              {messages.length === 0 && <div>No messages yet</div>}
-              {messages.map(m => (
-                <div key={m._id} style={{ textAlign: m.sender === userId ? 'right' : 'left' }}>
-                  <span style={{ background: m.sender === userId ? '#dcf8c6' : '#eee', padding: 4, borderRadius: 4, display: 'inline-block', margin: 2 }}>
-                    {m.content}
-                  </span>
-                </div>
-              ))}
+    <div className="main-content">
+      <div className="messages-container">
+        <div className="messages-sidebar">
+          <h3>Friends 💬</h3>
+          {friends.length === 0 && <div className="empty-state">No friends</div>}
+          {friends.map(f => (
+            <div 
+              key={f._id} 
+              className={`friend-item ${selected === f._id ? 'active' : ''}`}
+              onClick={() => fetchMessages(f._id)}
+            >
+              <div className="user-avatar">
+                {f.username?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+              <div className="user-info">
+                <strong>{f.username}</strong>
+              </div>
             </div>
-            <form onSubmit={sendMessage}>
-              <input type="text" value={newMsg} onChange={e => setNewMsg(e.target.value)} placeholder="Type a message..." style={{ width: '80%' }} />
-              <button type="submit">Send</button>
-            </form>
-          </>
-        ) : <div>Select a friend to chat</div>}
-        {error && <p style={{color:'red'}}>{error}</p>}
+          ))}
+        </div>
+        <div className="messages-main">
+          {selected ? (
+            <>
+              <div className="messages-header">
+                <h3>Chat with {friends.find(f => f._id === selected)?.username}</h3>
+              </div>
+              <div className="messages-list">
+                {messages.length === 0 && <div className="empty-state">No messages yet</div>}
+                {messages.map(m => (
+                  <div key={m._id} className={`message ${m.sender === userId ? 'sent' : 'received'}`}>
+                    <div className="message-content">{m.content}</div>
+                    <div className="message-time">
+                      {new Date(m.createdAt).toLocaleTimeString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <form onSubmit={sendMessage} className="message-form">
+                <input 
+                  type="text" 
+                  value={newMsg} 
+                  onChange={e => setNewMsg(e.target.value)} 
+                  placeholder="Type a message..." 
+                  className="message-input"
+                />
+                <button type="submit" className="btn btn-primary">Send</button>
+              </form>
+            </>
+          ) : (
+            <div className="messages-placeholder">
+              Select a friend to start chatting
+            </div>
+          )}
+          {error && <div className="error-message">{error}</div>}
+        </div>
       </div>
     </div>
   );
@@ -487,37 +679,62 @@ function Navbar() {
   };
 
   return (
-    <nav style={{ marginBottom: 20 }}>
-      <Link to="/feed">Feed</Link> |{' '}
-      <Link to="/profile">Profile</Link> |{' '}
-      <Link to="/friends">Friends</Link> |{' '}
-      <Link to="/messages">Messages</Link> |{' '}
-      <Link to="/login">Login</Link> |{' '}
-      <Link to="/register">Register</Link>
-      {loggedIn && (
-        <>
-          {' '}|{' '}
-          <button onClick={handleLogout} style={{ cursor: 'pointer' }}>Logout</button>
-        </>
-      )}
+    <nav className="navbar">
+      <div className="navbar-brand">
+        <Link to="/feed" className="brand-link">
+          <span className="brand-icon">📱</span>
+          <span className="brand-text">SocialHub</span>
+        </Link>
+      </div>
+      <div className="navbar-nav">
+        <Link to="/feed" className={`nav-link ${location.pathname === '/feed' ? 'active' : ''}`}>
+          Feed
+        </Link>
+        <Link to="/profile" className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`}>
+          Profile
+        </Link>
+        <Link to="/friends" className={`nav-link ${location.pathname === '/friends' ? 'active' : ''}`}>
+          Friends
+        </Link>
+        <Link to="/messages" className={`nav-link ${location.pathname === '/messages' ? 'active' : ''}`}>
+          Messages
+        </Link>
+        {!loggedIn && (
+          <>
+            <Link to="/login" className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}>
+              Login
+            </Link>
+            <Link to="/register" className={`nav-link ${location.pathname === '/register' ? 'active' : ''}`}>
+              Register
+            </Link>
+          </>
+        )}
+        {loggedIn && (
+          <button onClick={handleLogout} className="btn btn-outline btn-sm">
+            Logout
+          </button>
+        )}
+      </div>
     </nav>
   );
 }
 
 function App() {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/feed" element={<Feed />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/friends" element={<Friends />} />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/" element={<Navigate to="/feed" />} />
-      </Routes>
-    </Router>
+    <div className="app">
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/feed" element={<Feed />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/friends" element={<Friends />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/" element={<Navigate to="/feed" />} />
+        </Routes>
+      </Router>
+    </div>
   );
 }
 
